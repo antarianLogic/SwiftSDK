@@ -28,9 +28,10 @@ public enum TelemetryDeck {
         _ signalName: String,
         parameters: [String: String] = [:],
         floatValue: Double? = nil,
-        customUserID: String? = nil
+        customUserID: String? = nil,
+        anonymous: Bool = false
     ) {
-        TelemetryManager.send(signalName, for: customUserID, floatValue: floatValue, with: parameters)
+        TelemetryManager.send(signalName, for: customUserID, floatValue: floatValue, with: parameters, anonymous: anonymous)
     }
 
     /// Do not call this method unless you really know what you're doing. The signals will automatically sync with the server at appropriate times, there's no need to call this.

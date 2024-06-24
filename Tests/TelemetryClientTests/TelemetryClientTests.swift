@@ -172,7 +172,7 @@ private class FakeSignalManager: SignalManageable {
     var processedSignalTypes = [String]()
     var processedSignals = [SignalPostBody]()
     
-    func processSignal(_ signalType: String, parameters: [String : String], floatValue: Double?, customUserID: String?, configuration: TelemetryManagerConfiguration) {
+    func processSignal(_ signalType: String, parameters: [String : String], floatValue: Double?, customUserID: String?, configuration: TelemetryManagerConfiguration, useAnonymousSession: Bool = false) {
         processedSignalTypes.append(signalType)
         let enrichedMetadata: [String: String] = configuration.metadataEnrichers
             .map { $0.enrich(signalType: signalType, for: customUserID, floatValue: floatValue) }
@@ -186,7 +186,7 @@ private class FakeSignalManager: SignalManageable {
             receivedAt: Date(),
             appID: UUID(uuidString: configuration.telemetryAppID)!,
             clientUser: customUserID ?? "no user",
-            sessionID: configuration.sessionID.uuidString,
+            sessionID: useAnonymousSession ? CryptoHashing.sha256(string: "anonymous", salt: "") : configuration.sessionID.uuidString,
             type: "\(signalType)",
             floatValue: floatValue,
             payload: payload.toMultiValueDimension(),
