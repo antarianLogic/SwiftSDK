@@ -11,7 +11,7 @@ import TVUIKit
 #endif
 
 internal protocol SignalManageable {
-    func processSignal(_ signalName: String, parameters: [String: String], floatValue: Double?, customUserID: String?, configuration: TelemetryManagerConfiguration)
+    func processSignal(_ signalName: String, parameters: [String: String], floatValue: Double?, customUserID: String?, configuration: TelemetryManagerConfiguration, useAnonymousSession: Bool)
     func attemptToSendNextBatchOfCachedSignals()
 }
 
@@ -72,7 +72,8 @@ internal class SignalManager: SignalManageable {
         parameters: [String: String],
         floatValue: Double?,
         customUserID: String?,
-        configuration: TelemetryManagerConfiguration
+        configuration: TelemetryManagerConfiguration,
+        useAnonymousSession: Bool = false
     ) {
         DispatchQueue.global(qos: .utility).async {
             let enrichedMetadata: [String: String] = configuration.metadataEnrichers
@@ -87,7 +88,7 @@ internal class SignalManager: SignalManageable {
                 receivedAt: Date(),
                 appID: UUID(uuidString: configuration.telemetryAppID)!,
                 clientUser: CryptoHashing.sha256(string: customUserID ?? self.defaultUserIdentifier, salt: configuration.salt),
-                sessionID: configuration.sessionID.uuidString,
+                sessionID: useAnonymousSession ? CryptoHashing.sha256(string: "anonymous", salt: "") : configuration.sessionID.uuidString,
                 type: "\(signalName)",
                 floatValue: floatValue,
                 payload: payload.toMultiValueDimension(),

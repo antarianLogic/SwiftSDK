@@ -222,8 +222,8 @@ public class TelemetryManager {
         *, deprecated,
         message: "This call was renamed to `TelemetryDeck.signal(_:parameters:floatValue:customUserID:)`. Please migrate – no fix-it possible due to the changed order of arguments."
     )
-    public static func send(_ signalName: String, for customUserID: String? = nil, floatValue: Double? = nil, with parameters: [String: String] = [:]) {
-        TelemetryManager.shared.send(signalName, for: customUserID, floatValue: floatValue, with: parameters)
+    public static func send(_ signalName: String, for customUserID: String? = nil, floatValue: Double? = nil, with parameters: [String: String] = [:], anonymous: Bool = false) {
+        TelemetryManager.shared.send(signalName, for: customUserID, floatValue: floatValue, with: parameters, anonymous: anonymous)
     }
 
     /// Do not call this method unless you really know what you're doing. The signals will automatically sync with the server at appropriate times, there's no need to call this.
@@ -299,11 +299,11 @@ public class TelemetryManager {
         *, deprecated,
         message: "This call was renamed to `TelemetryDeck.signal(_:parameters:floatValue:customUserID:)`. Please migrate – no fix-it possible due to the changed order of arguments."
     )
-    public func send(_ signalName: String, for customUserID: String? = nil, floatValue: Double? = nil, with parameters: [String: String] = [:]) {
+    public func send(_ signalName: String, for customUserID: String? = nil, floatValue: Double? = nil, with parameters: [String: String] = [:], anonymous: Bool = false) {
         // make sure to not send any signals when run by Xcode via SwiftUI previews
         guard !configuration.swiftUIPreviewMode, !configuration.analyticsDisabled else { return }
 
-        signalManager.processSignal(signalName, parameters: parameters, floatValue: floatValue, customUserID: customUserID, configuration: configuration)
+        signalManager.processSignal(signalName, parameters: parameters, floatValue: floatValue, customUserID: customUserID, configuration: configuration, useAnonymousSession: anonymous)
     }
 
     /// Do not call this method unless you really know what you're doing. The signals will automatically sync with the server at appropriate times, there's no need to call this.

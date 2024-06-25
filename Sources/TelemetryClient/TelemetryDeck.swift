@@ -35,9 +35,10 @@ public enum TelemetryDeck {
         _ signalName: String,
         parameters: [String: String] = [:],
         floatValue: Double? = nil,
-        customUserID: String? = nil
+        customUserID: String? = nil,
+        anonymous: Bool = false
     ) {
-        TelemetryManager.send(signalName, for: customUserID, floatValue: floatValue, with: parameters)
+        TelemetryManager.send(signalName, for: customUserID, floatValue: floatValue, with: parameters, anonymous: anonymous)
     }
 
     /// Send a signal that represents a navigation event with a source and a destination
